@@ -51,7 +51,7 @@
 		)
 		VALUES
 		(
-			#{employeeID},
+			#{employeeId},
 			#{lastName},
 			#{email},
 			#{hireDate},
@@ -90,15 +90,16 @@
 		   	   </choose>
 		   	   
 		   	   <if test="email != null">
-		   	   	email = #{email}
+		   	   	, email = #{email}
 		   	   </if>
 		   	   <if test="salary >= 0">
-		   	   	salary = #{salary}
+		   	   	, salary = #{salary}
 		   	   </if>
-		   WHERE 
+		   <where>
 		   	<if test="employeeId > 0">
 			   employee_id = #{employeeId}
 		   	</if>
+		   </where> 
 	</update>
 	
 	<!-- 매개변수 두개 -->

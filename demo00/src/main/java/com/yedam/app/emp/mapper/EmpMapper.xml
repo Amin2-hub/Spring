@@ -2,4 +2,110 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  <mapper></mapper>
+  <mapper namespace="com.yedam.app.emp.mapper.EmpMapper">
+	<!-- 전체조회 ORDER BY 들어갈수 있도록 작성 -->
+	<select id="selectEmpList" resultType="EmpVO">
+		SELECT employee_id
+				, last_name
+				, email
+				, hire_date
+				, job_id
+				, salary
+		FROM employees
+		ORDER BY employee_id
+	</select>
+
+	<!-- 단건조회 ORDER BY 가 빠지고 WHERE 들어감 mybatis만 변수명은 #으로 가져온다 나머지는 다 $ 이거 쓴다
+	 #은 특정타입만 알려주면 알아서 처리 $는 statement 그냥 홀따옴표 다뺸다-->
+	<select id="selectEmpInfo" resultType="EmpVO">
+		SELECT employee_id
+				, last_name
+				, email
+				, hire_date
+				, job_id
+				, salary
+		FROM employees
+		WHERE employee_id = #{employeeId}
+		<!-- 
+			column LIKE '%'||#{field}||'%' 얘가 #
+			column LIKE '%${field}%' 얘가 $ 일때 예시
+		 -->
+	</select>
+
+	<!-- 등록 -->
+	<insert id="insertEmpInfo" parameterType="EmpVO">
+		<selectKey keyProperty="employeeId"
+				  resultType="int"
+				  order="BEFORE">
+			SELECT NVL(MAX(employee_id), 0) + 1
+			FROM employees
+		</selectKey>
+		INSERT INTO employees
+		(
+			employee_id,
+			last_name,
+			email,
+			hire_date,
+			job_id,
+			salary
+		)
+		VALUES
+		(
+			#{employeeID},
+			#{lastName},
+			#{email},
+			#{hireDate},
+			#{jobId},
+			#{salary}
+		)
+	</insert>
+
+	<!-- 수정 : 전제조건, 전체데이터 전송 -->
+	<update id="updateEmpInfo" parameterType="EmpVO">
+		UPDATE employees
+		   SET
+		   		last_name = #{lastName},
+		   		email = #{email},
+		   		salary = #{salary}
+		WHERE employee_id = #{employeeId}
+	</update>
+
+	<!-- 삭제 -->
+	<delete id="deleteEmpInfo" parameterType="int">
+		DELETE FROM employees
+		WHERE employee_id = #{eid}
+	</delete>
+	
+	<!-- 수정 : 변경된 데이터만 전송 -->
+	<update id="updateEmpInfoDynamic" parameterType="EmpVO">
+		UPDATE employees
+		   SET 
+		   	   <choose>
+		   	   	<when test="LastName != null and !LastName.equals('')">
+			   	   	last_name = #{lastName}
+		   	   	</when>
+		   	   	<otherwise>
+		   	   		last_name = 'Any'
+		   	   	</otherwise>
+		   	   </choose>
+		   	   
+		   	   <if test="email != null">
+		   	   	email = #{email}
+		   	   </if>
+		   	   <if test="salary >= 0">
+		   	   	salary = #{salary}
+		   	   </if>
+		   WHERE 
+		   	<if test="employeeId > 0">
+			   employee_id = #{employeeId}
+		   	</if>
+	</update>
+	
+	<!-- 매개변수 두개 -->
+	<update id="updateEmpSal">
+		UPDATE employees
+		   SET salary = salary * #{info.salary}
+		WHERE employee_id = #{eid}
+	</update>
+
+</mapper>
