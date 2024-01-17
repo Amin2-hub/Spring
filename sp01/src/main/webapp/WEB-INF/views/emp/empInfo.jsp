@@ -8,8 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
 
 <title>사원 정보 조회 및 수정</title>
 </head>
@@ -17,51 +16,51 @@
 	<div class="container">
 		<form>
 			<div class="mb-3 row">
-		    <label for="inputPassword" class="col-sm-2 col-form-label">employee_id</label>
+		    <label for="inputPassword" class="col-sm-2 col-form-label" for="employeeId">employee_id</label>
 		    <div class="col-sm-10">
-		      <input type="number" class="form-control" name="employeeId" value="${ empInfo.employeeId }">
+		      <input type="number" class="form-control" name="employeeId" value="${ empInfo.employeeId }" id="employeeId">
 		    </div>
 		  </div>
 		
 		<div class="mb-3 row">
-		    <label class="col-sm-2 col-form-label">last_name</label>
+		    <label class="col-sm-2 col-form-label" for="lastName">last_name</label>
 		    <div class="col-sm-10">
-		      <input type="text" class="form-control" name="lastName" value="${ empInfo.lastName }">
+		      <input type="text" class="form-control" name="lastName" value="${ empInfo.lastName }" id="lastName">
 		    </div>
 		  </div>
 		
 		<div class="mb-3 row">
-		    <label class="col-sm-2 col-form-label">email</label>
+		    <label class="col-sm-2 col-form-label" for="email">email</label>
 		    <div class="col-sm-10">
-		      <input type="text" class="form-control" name="email" value="${ empInfo.email }">
+		      <input type="text" class="form-control" name="email" value="${ empInfo.email }" id="email">
 		    </div>
 		  </div>
 		
 		<div class="mb-3 row">
-		    <label class="col-sm-2 col-form-label">hire_date</label>
+		    <label class="col-sm-2 col-form-label" for="hireDate">hire_date</label>
 		    <div class="col-sm-10">
-		      <input type="date" class="form-control" name="hireDate" value='<fmt:formatDate value="${empInfo.hireDate }" pattern="yyyy-MM-dd"/>'>
+		      <input type="date" class="form-control" name="hireDate" value='<fmt:formatDate value="${empInfo.hireDate }" pattern="yyyy-MM-dd"/>' id="hireDate">
 		    </div>
 		  </div>
 		
 		<div class="mb-3 row">
-		    <label class="col-sm-2 col-form-label">job_id</label>
+		    <label class="col-sm-2 col-form-label" for="jobId">job_id</label>
 		    <div class="col-sm-10">
-		      <input type="text" class="form-control" name="jobId" value="${ empInfo.jobId }">
+		      <input type="text" class="form-control" name="jobId" value="${ empInfo.jobId }" id="jobId">
 		    </div>
 		  </div>
 		
 		<div class="mb-3 row">
-		    <label class="col-sm-2 col-form-label">salary</label>
+		    <label class="col-sm-2 col-form-label" for="salary">salary</label>
 		    <div class="col-sm-10">
-		      <input type="number" class="form-control" name="salary" value="${ empInfo.salary }">
+		      <input type="number" class="form-control" name="salary" value="${ empInfo.salary }" id="salary">
 		    </div>
 		  </div>
 				
 			<div>
 				<button type="button" onclick="location.href='empList'" class="btn btn-outline-secondary">목록으로</button>
 				<button type="button" id="updateBtn" class="btn btn-outline-success">수정</button>
-				<button type="button" class="btn btn-outline-danger">삭제</button>
+				<button type="button" onclick="location.href='empDelete?eid=${empInfo.employeeId}'" class="btn btn-outline-danger">삭제</button>
 			</div>
 		</form>
 	</div>
@@ -75,19 +74,37 @@
 		console.log(empInfo);
 		
 		// 해당정보를 기반으로 Ajax
-		// -QueryString
+		// -QueryString : key=value&key=value...
 		fetch('empUpdate', {
 			method : 'post',
-			body : new URLSearchParams(empInfo)
+			body : new URLSearchParams(empInfo)  //쿼리스트링은 이부분이랑 같이 사용된다.
 		})
 		.then(res => res.json())
 		.then(result => {
 			console.log('QueryString', result);
 		})
 		.catch(err => console.log(err));
+		
+		// -JSON : { "key" : "value", "key" : "value", ...} 그냥 나열된 문자열임 객체아님
+		fetch('empUpdateAjax', {
+			method : 'post',
+			headers : {
+						'Content-type' : 'application/json'
+					},
+			body : JSON.stringify(empInfo)
+		})
+		.then(res => res.json())
+		.then(result => {
+			console.log('JSON', result);
+		})
+		.catch(err => console.log(err));
+		
+		
+		
 	}
 	
 	function getEmpInfo(){
+		//form input 사이의 공백은 하위요소를 의미
 		let inputList = document.querySelectorAll('form input');
 		
 		let objData = {};
@@ -100,6 +117,6 @@
 	
 	
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 </body>
 </html>
