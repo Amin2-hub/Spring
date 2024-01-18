@@ -26,7 +26,10 @@
 	<!-- mybatis SqlSessionFactory -->
 	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="configLocation" 
+					value="classpath:mybatis-config.xml" />
+		<!-- mapperLocation 이게 들어가면 사용하고있는 xml파일 위치가 달라짐 -->
+		<!-- <property name="mapperLocations" value="*classpath:mapper/*.xml" /> -->
 	</bean>
 
 	<!-- mapper scan -->

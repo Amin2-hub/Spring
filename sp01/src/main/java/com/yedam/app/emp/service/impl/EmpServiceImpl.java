@@ -41,14 +41,14 @@ public class EmpServiceImpl implements EmpService {
 	@Override
 	public Map<String, Object> updateEmpInfo(EmpVO empVO) { //value에 object를 쓰는 이유는 여러타입을 쓸수 있기 때문
 		Map<String, Object> map = new HashMap<>();
-		boolean isSuccessd = false;
+		boolean isSuccessed = false;
 		
 		int result = empMapper.updateEmpInfo(empVO);
 		if(result == 1) {
-			isSuccessd = true;
+			isSuccessed = true;
 		}
 		
-		map.put("result", isSuccessd);
+		map.put("result", isSuccessed);
 		map.put("target", empVO);
 		return map;
 	}
